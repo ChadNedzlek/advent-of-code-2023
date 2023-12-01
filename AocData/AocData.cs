@@ -98,7 +98,7 @@ namespace ChadNedzlek.AdventOfCode.DataModule
                 TaskCompletionSource<bool> closed = new TaskCompletionSource<bool>();
                 Task<bool> cTask = closed.Task;
                 page.Close += (_, _) => closed.TrySetResult(true);
-                await page.GotoAsync("https://adventofcode.com/2022/auth/login");
+                await page.GotoAsync($"https://adventofcode.com/{_year}/auth/login");
                 string cookie = await TryGetCookie(page);
                 while (cookie == null)
                 {
