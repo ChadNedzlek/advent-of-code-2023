@@ -32,7 +32,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
         }
 
         public static async IAsyncEnumerable<ValueTuple<T1, T2>> As<T1, T2>(
-            IAsyncEnumerable<string> data,
+            this IAsyncEnumerable<string> data,
             [RegexPattern] string pattern)
         {
             await foreach (string line in data)
@@ -42,7 +42,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
         }
 
         public static async IAsyncEnumerable<ValueTuple<T1, T2, T3>> As<T1, T2, T3>(
-            IAsyncEnumerable<string> data,
+            this IAsyncEnumerable<string> data,
             [RegexPattern] string pattern)
         {
             await foreach (string line in data)
@@ -52,7 +52,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
         }
 
         public static async IAsyncEnumerable<TTyped> AsTyped<T1, T2, T3, TTyped>(
-            IAsyncEnumerable<string> data,
+            this IAsyncEnumerable<string> data,
             [RegexPattern] string pattern)
             where TTyped : IConvertable<(T1, T2, T3), TTyped>
         {
@@ -94,7 +94,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
 
 
         public static async IAsyncEnumerable<T1> As<T1>(
-            IAsyncEnumerable<string> data,
+            this IAsyncEnumerable<string> data,
             [RegexPattern] string pattern)
         {
             await foreach (string line in data)
