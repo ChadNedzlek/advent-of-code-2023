@@ -58,7 +58,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             throw new HalfDoneException();
         }
 
-        private class HalfDoneException : Exception
+        protected class HalfDoneException : Exception
         {
         }
     }
