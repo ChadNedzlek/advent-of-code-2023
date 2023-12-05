@@ -61,13 +61,11 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
         private long GetNumber(List<string> parts, Point2<int> p)
         {
-            if (p.Y < 0 || p.Y >= parts.Count)
+            if (!parts.TryGet(p.Y, p.X, out char c))
                 return 0;
-            var line = parts[p.Y];
-            if (p.X < 0 || p.X >= line.Length)
+            if (c == '.')
                 return 0;
-            if (parts[p.Y][p.X] == '.')
-                return 0;
+            string line = parts[p.Y];
             int s = p.X;
             int e = p.X;
             while (s > 0 && char.IsDigit(line[s - 1]))

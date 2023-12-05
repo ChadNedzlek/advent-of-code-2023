@@ -14,6 +14,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
             a = arr[0];
             b = arr[1];
         }
+        
+        public static void Deconstruct<T>(this T[] arr, out T a, out T b, out T c)
+        {
+            if (arr.Length != 3)
+                throw new ArgumentException($"{nameof(arr)} must be 2 elements in length", nameof(arr));
+            a = arr[0];
+            b = arr[1];
+            c = arr[2];
+        }
 
         public static IEnumerable<T> AsEnumerable<T>(this T[,] arr)
         {
@@ -182,6 +191,44 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
             }
 
             return -1;
+        }
+
+        public static bool TryGet<T>(this IReadOnlyList<IReadOnlyList<T>> input, int i1, int i2, out T value)
+        {
+            if (i1 < 0 || i1 >= input.Count)
+            {
+                value = default;
+                return false;
+            }
+
+            var l = input[i1];
+            if (i2 < 0 || i2 >= l.Count)
+            {
+                value = default;
+                return false;
+            }
+
+            value = l[i2];
+            return true;
+        }
+        
+        public static bool TryGet(this IReadOnlyList<string> input, int i1, int i2, out char value)
+        {
+            if (i1 < 0 || i1 >= input.Count)
+            {
+                value = default;
+                return false;
+            }
+
+            string l = input[i1];
+            if (i2 < 0 || i2 >= l.Length)
+            {
+                value = default;
+                return false;
+            }
+
+            value = l[i2];
+            return true;
         }
     }
 }
