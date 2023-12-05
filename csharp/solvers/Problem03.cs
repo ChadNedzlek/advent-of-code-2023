@@ -100,14 +100,6 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             }
 
             long total = 0;
-
-            void Add(long v)
-            {
-                if (v == 0)
-                    return;
-                total += v;
-                Console.WriteLine($"Added {v}");
-            }
             foreach (var p in symbols)
             {
                 HashSet<long> ratios = new();
