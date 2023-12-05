@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ChadNedzlek.AdventOfCode.Y2023.CSharp;
+namespace ChadNedzlek.AdventOfCode.Library;
 
 public class Infinite2I<T> : IEnumerable<T>
 {

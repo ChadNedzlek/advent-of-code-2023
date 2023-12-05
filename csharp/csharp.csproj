@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AocData\AocData.csproj" />
+      <ProjectReference Include="..\lib\lib.csproj" />
     </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ChadNedzlek.AdventOfCode.Library;
 using JetBrains.Annotations;
 
 namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers

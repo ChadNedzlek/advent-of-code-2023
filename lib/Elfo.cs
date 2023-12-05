@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ChadNedzlek.AdventOfCode.Y2023.CSharp;
+namespace ChadNedzlek.AdventOfCode.Library;
 
 public static class Elfo
 {
