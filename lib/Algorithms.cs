@@ -323,4 +323,11 @@ public abstract class Algorithms
     {
         return BreadthFirstSearch<TState, int, int>(initial, nextStates, isBetterState, null, null, null);
     }
+
+    public static (double, double) SolveQuadratic(double a, double b, double c)
+    {
+        var r = Math.Sqrt(b * b - 4 * a * c);
+        var d = 2 * a;
+        return ((-b + r) / d, (-b - r) / d);
+    }
 }

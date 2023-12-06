@@ -21,21 +21,38 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             long total = 1;
             for (int i = 0; i < times.Count; i++)
             {
-                Helpers.Verbose($"Race {i} wins with ");
-                int perm = 0;
-                for (int h = 1; h < times[i]; h++)
-                {
-                    var dist = (times[i] - h) * h;
-                    if (dist > distances[i])
-                    {
-                        Helpers.Verbose($"{h} ");
-                        perm++;
-                    }
-                }
-                Helpers.VerboseLine($" for {perm} ways to win");
-                total *= perm;
+                total *= BoringWay(i, times, distances);
             }
             Console.WriteLine($"Multi: {total}");
+        }
+
+        private static int BoringWay(int i, List<long> times, List<long> distances)
+        {
+            Helpers.Verbose($"Race {i} wins with ");
+            int perm = 0;
+            for (int h = 1; h < times[i]; h++)
+            {
+                var dist = (times[i] - h) * h;
+                if (dist > distances[i])
+                {
+                    Helpers.Verbose($"{h} ");
+                    perm++;
+                }
+            }
+
+            Helpers.VerboseLine($" for {perm} ways to win");
+            return perm;
+        }
+
+        private static int MathyWay(int i, long time, long distance)
+        {
+            var (a, b) = Algorithms.SolveQuadratic(-1, time, -distance);
+            if (a > b)
+                (b, a) = (a, b);
+            var perm = (int)(Math.Ceiling(b - 1) - Math.Floor(a + 1) + 1);
+
+            Helpers.VerboseLine($"Race {i} has {perm} ways to win");
+            return perm;
         }
 
         protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
@@ -48,19 +65,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             long total = 1;
             for (int i = 0; i < times.Count; i++)
             {
-                Helpers.Verbose($"Race {i} wins with ");
-                int perm = 0;
-                for (int h = 1; h < times[i]; h++)
-                {
-                    var dist = (times[i] - h) * h;
-                    if (dist > distances[i])
-                    {
-                        Helpers.Verbose($"{h} ");
-                        perm++;
-                    }
-                }
-                Helpers.VerboseLine($" for {perm} ways to win");
-                total *= perm;
+                total *= MathyWay(i, times[i], distances[i]);
             }
             Console.WriteLine($"Multi: {total}");
         }

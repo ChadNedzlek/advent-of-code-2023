@@ -10,9 +10,9 @@ public readonly record struct RangeL(long Start, long Length)
 
     public override string ToString() => $"{Start}-{End}";
 
-    public void SpliceOut(RangeL other, out RangeL? before, out RangeL? mid, out RangeL? after)
+    public void Splice(RangeL spliceRange, out RangeL? before, out RangeL? mid, out RangeL? after)
     {
-        if (End < other.Start || Start >= other.End)
+        if (End < spliceRange.Start || Start >= spliceRange.End)
         {
             before = this;
             mid = after = null;
@@ -21,16 +21,16 @@ public readonly record struct RangeL(long Start, long Length)
 
         before = after = null;
         RangeL cur = this;
-        if (cur.Start < other.Start)
+        if (cur.Start < spliceRange.Start)
         {
-            before = cur with { Length = other.Start - cur.Start };
-            cur = other with { Length = cur.End - other.Start };
+            before = cur with { Length = spliceRange.Start - cur.Start };
+            cur = spliceRange with { Length = cur.End - spliceRange.Start };
         }
             
-        if (cur.End > other.End)
+        if (cur.End > spliceRange.End)
         {
-            after = new RangeL(other.End, cur.End - other.End);
-            mid = cur with { Length = other.End - cur.Start };
+            after = new RangeL(spliceRange.End, cur.End - spliceRange.End);
+            mid = cur with { Length = spliceRange.End - cur.Start };
         }
 
         mid = cur;

@@ -145,7 +145,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 List<RangeL> unmapped = new List<RangeL>();
                 foreach (var i in input)
                 {
-                    i.SpliceOut(Source, out var before, out var mid, out var after);
+                    i.Splice(Source, out var before, out var mid, out var after);
                     if (before.HasValue)
                         unmapped.Add(before.Value);
                     if (after.HasValue)
