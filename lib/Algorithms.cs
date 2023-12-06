@@ -328,6 +328,12 @@ public abstract class Algorithms
     {
         var r = Math.Sqrt(b * b - 4 * a * c);
         var d = 2 * a;
-        return ((-b + r) / d, (-b - r) / d);
+        var s1 = (-b - r) / d;
+        var s2 = (-b + r) / d;
+        
+        // If a is negative, these will be in the wrong order, and it's annoying for the caller to have to check, so swap em
+        if (s1 > s2)
+            (s1, s2) = (s2, s1);
+        return (s1, s2);
     }
 }

@@ -47,9 +47,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         private static int MathyWay(int i, long time, long distance)
         {
             var (a, b) = Algorithms.SolveQuadratic(-1, time, -distance);
-            if (a > b)
-                (b, a) = (a, b);
-            var perm = (int)(Math.Ceiling(b - 1) - Math.Floor(a + 1) + 1);
+            var perm = (int)(Math.Floor(b) - Math.Ceiling(a) + 1);
 
             Helpers.VerboseLine($"Race {i} has {perm} ways to win");
             return perm;
