@@ -53,7 +53,18 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
         private static int MathyWay(long time, long distance)
         {
+            // If we spend 'x' time "charging", then we get to go for 'time - x'
+            // at speed 'x', which means the distance is
+            // (time - x)(x) = distance
+            // A little rearranging...
+            // time * x - x ^ 2 = distance
+            // More math!
+            // -x^2 + time*x - distance = 0
+            // That's a quadratic equation, we can instantly calculate the overlaps
             var (a, b) = Algorithms.SolveQuadratic(-1, time, -distance);
+            
+            // They are doubles, because math, so we need to see which discrete points we are
+            // bracketing, so floor the top and bottom, and it's inclusive, so add one
             var perm = (int)(Math.Floor(b) - Math.Ceiling(a) + 1);
 
             Helpers.VerboseLine($"Race has {perm} ways to win");

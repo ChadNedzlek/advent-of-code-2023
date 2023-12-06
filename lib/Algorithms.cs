@@ -324,6 +324,10 @@ public abstract class Algorithms
         return BreadthFirstSearch<TState, int, int>(initial, nextStates, isBetterState, null, null, null);
     }
 
+    /// <summary>
+    /// Get both solutions to a quadratic equation in the form a*x^2 + b*x + c = 0
+    /// </summary>
+    /// <returns>Pair of solutions, with the first always the smaller of the two</returns>
     public static (double, double) SolveQuadratic(double a, double b, double c)
     {
         var r = Math.Sqrt(b * b - 4 * a * c);
