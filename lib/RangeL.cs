@@ -1,12 +1,16 @@
 ﻿namespace ChadNedzlek.AdventOfCode.Library;
 
-public readonly record struct LRange(long Start, long Length)
+public readonly record struct RangeL(long Start, long Length)
 {
+    /// <summary>
+    /// Exclusive end boundary.
+    /// </summary>
+    /// <example>{Start:1, End:4} => [1, 2, 3]</example>
     public long End => Start + Length;
 
     public override string ToString() => $"{Start}-{End}";
 
-    public void SpliceOut(LRange other, out LRange? before, out LRange? mid, out LRange? after)
+    public void SpliceOut(RangeL other, out RangeL? before, out RangeL? mid, out RangeL? after)
     {
         if (End < other.Start || Start >= other.End)
         {
@@ -16,7 +20,7 @@ public readonly record struct LRange(long Start, long Length)
         }
 
         before = after = null;
-        LRange cur = this;
+        RangeL cur = this;
         if (cur.Start < other.Start)
         {
             before = cur with { Length = other.Start - cur.Start };
@@ -25,10 +29,12 @@ public readonly record struct LRange(long Start, long Length)
             
         if (cur.End > other.End)
         {
-            after = new LRange(other.End, cur.End - other.End);
+            after = new RangeL(other.End, cur.End - other.End);
             mid = cur with { Length = other.End - cur.Start };
         }
 
         mid = cur;
     }
+
+    public bool Contains(long value) => Start <= value && value < End;
 }

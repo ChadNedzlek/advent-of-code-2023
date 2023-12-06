@@ -14,7 +14,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
         {
             var parts = await data.ToListAsync();
-            var symbols = new List<Point2<int>>();
+            var symbols = new List<Point2I>();
             for (var y = 0; y < parts.Count; y++)
             {
                 string part = parts[y];
@@ -60,7 +60,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Total {total}");
         }
 
-        private long GetNumber(List<string> parts, Point2<int> p)
+        private long GetNumber(List<string> parts, Point2I p)
         {
             if (!parts.TryGet(p.Y, p.X, out char c))
                 return 0;
@@ -84,7 +84,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
         {
             var parts = await data.ToListAsync();
-            var symbols = new List<Point2<int>>();
+            var symbols = new List<Point2I>();
             for (var y = 0; y < parts.Count; y++)
             {
                 string part = parts[y];

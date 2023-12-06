@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
         protected virtual async Task ExecuteCoreAsync(IAsyncEnumerable<string> data)
         {
+            var s = Stopwatch.StartNew();
             try
             {
                 await ExecutePart2Async(data);
@@ -47,6 +49,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             {
                 await ExecutePart1Async(data);
             }
+            Helpers.VerboseLine($"Elapsed: {s.Elapsed}");
         }
 
         protected virtual Task ExecutePart1Async(IAsyncEnumerable<string> data)

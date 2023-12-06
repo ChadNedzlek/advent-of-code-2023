@@ -49,13 +49,13 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             IEnumerable<long> values = start;
             while (step != "location")
             {
-                Console.WriteLine($"{step} : {string.Join(" ", values)}");
+                Helpers.VerboseLine($"{step} : {string.Join(" ", values)}");
                 var (next, ranges) = mappings[step];
                 values = values.Select(v => Map(v, ranges));
                 step = next;
             }
 
-            Console.WriteLine($"{step} : {string.Join(" ", values)}");
+            Helpers.VerboseLine($"{step} : {string.Join(" ", values)}");
             Console.WriteLine($"Lowest: {values.Min()}");
         }
 
@@ -67,7 +67,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
         {
             string startLabel = null;
-            List<LRange> start = null;
+            List<RangeL> start = null;
             Dictionary<string, (string target, List<MapRange> ranges)> mappings = new();
             List<MapRange> currentRanges = null;
             await foreach (var line in data)
@@ -77,10 +77,10 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     (startLabel, string list) = line.Split(':');
                     startLabel = startLabel[..^1];
                     var parts = list.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToList();
-                    start = new List<LRange>();
+                    start = new List<RangeL>();
                     for (var i = 0; i < parts.Count; i+=2)
                     {
-                        start.Add(new LRange(parts[i], parts[i + 1]));
+                        start.Add(new RangeL(parts[i], parts[i + 1]));
                     }
 
                     continue;
@@ -105,16 +105,16 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             }
 
             string step = startLabel;
-            IEnumerable<LRange> values = start;
+            IEnumerable<RangeL> values = start;
             while (step != "location")
             {
                 Console.WriteLine($"{step} : {string.Join(" ", values)}");
                 var (next, ranges) = mappings[step];
                 var unresolved = values;
-                var resolved = new List<LRange>();
+                var resolved = new List<RangeL>();
                 foreach (var r in ranges)
                 {
-                    (unresolved, List<LRange> mapped) = r.Map(unresolved);
+                    (unresolved, List<RangeL> mapped) = r.Map(unresolved);
                     resolved.AddRange(mapped);
                 }
 
@@ -126,7 +126,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Lowest: {values.Min(v => v.Start)}");
         }
 
-        private record struct MapRange(LRange Source, long DestinationStart)
+        private record struct MapRange(RangeL Source, long DestinationStart)
         {
             public override string ToString() => $"{Source}=>{DestinationStart}-{DestinationStart + Source.Length}";
 
@@ -139,10 +139,10 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 return DestinationStart + (input - Source.Start);
             }
 
-            public (List<LRange> unmapped, List<LRange> mapped) Map(IEnumerable<LRange> input)
+            public (List<RangeL> unmapped, List<RangeL> mapped) Map(IEnumerable<RangeL> input)
             {
-                List<LRange> mapped = new List<LRange>();
-                List<LRange> unmapped = new List<LRange>();
+                List<RangeL> mapped = new List<RangeL>();
+                List<RangeL> unmapped = new List<RangeL>();
                 foreach (var i in input)
                 {
                     i.SpliceOut(Source, out var before, out var mid, out var after);
