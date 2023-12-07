@@ -61,8 +61,6 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
         public record struct Hand(string Values, long Bid, bool Wild) : IComparable<Hand>
         {
-            private static readonly ImmutableList<char> Letters = "23456789TQKA".ToImmutableList();
-
             private string GetBestWildHand()
             {
                 if (!Wild)
@@ -71,10 +69,12 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 string best = Values;
                 HandRank bestCat = CalculateCategory(best);
                 string f = Values.Replace("J", "");
-                if (f.Length == Values.Length)
+                // We only need to try the cards in the hand, since only sets count
+                List<char> inHand = f.Distinct().ToList();
+                if (f.Length == Values.Length || f.Length == 0)
                     return Values;
 
-                foreach (var perm in Algorithms.Permute(Letters, Values.Length - f.Length))
+                foreach (var perm in Algorithms.Permute(inHand, Values.Length - f.Length))
                 {
                     string permHand = f + new string((ReadOnlySpan<char>)perm);
                     var permCat = CalculateCategory(permHand);
