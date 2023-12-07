@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ChadNedzlek.AdventOfCode.Library;
-using Spectre.Console;
 
 namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
@@ -14,33 +11,26 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
     {
         protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
         {
-            var list = await data.Select(d => d.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-                .Select(a => new Hand(a[0], long.Parse(a[1]), false)).OrderBy(x => x).ToListAsync();
-            var values = list.Select((h, i) => (Hand: h, Total: h.Bid * (i + 1))).ToList();
-            if (Helpers.IncludeVerboseOutput)
-            {
-                for (var rank = 0; rank < values.Count; rank++)
-                {
-                    (Hand Hand, long Total) = values[rank];
-                    Console.WriteLine($"Hand {Hand.Values} [{Hand.Category}] bid {Hand.Bid} at rank {rank+1} for total {Total}");
-                }
-            }
-
-            var total = values.Sum(v => v.Total);
-            Console.WriteLine($"Sum: {total}");
+            await CalculateHands(data, false);
         }
 
         protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
         {
+            await CalculateHands(data, true);
+        }
+
+        private static async Task CalculateHands(IAsyncEnumerable<string> data, bool wilds)
+        {
             var list = await data.Select(d => d.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-                .Select(a => new Hand(a[0], long.Parse(a[1]), true)).OrderBy(x => x).ToListAsync();
+                .Select(a => new Hand(a[0], long.Parse(a[1]), wilds)).OrderBy(x => x).ToListAsync();
             var values = list.Select((h, i) => (Hand: h, Total: h.Bid * (i + 1))).ToList();
             if (Helpers.IncludeVerboseOutput)
             {
                 for (var rank = 0; rank < values.Count; rank++)
                 {
                     (Hand Hand, long Total) = values[rank];
-                    Console.WriteLine($"Hand {Hand.Values} [{Hand.Category}] bid {Hand.Bid} at rank {rank+1} for total {Total}");
+                    Console.WriteLine(
+                        $"Hand {Hand.Values} [{Hand.Category}] bid {Hand.Bid} at rank {rank + 1} for total {Total}");
                 }
             }
 
