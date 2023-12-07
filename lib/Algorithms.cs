@@ -327,7 +327,8 @@ public abstract class Algorithms
     /// <summary>
     /// Get both solutions to a quadratic equation in the form a*x^2 + b*x + c = 0
     /// </summary>
-    /// <returns>Pair of solutions, with the first always the smaller of the two</returns>
+    /// <returns>Pair of solutions, with the first always the smaller of the two. Will return a pair of <see cref="double.NaN"/>
+    /// if there is no solution</returns>
     public static (double, double) SolveQuadratic(double a, double b, double c)
     {
         var r = Math.Sqrt(b * b - 4 * a * c);
@@ -339,5 +340,25 @@ public abstract class Algorithms
         if (s1 > s2)
             (s1, s2) = (s2, s1);
         return (s1, s2);
+    }
+
+    public static IEnumerable<T[]> Permute<T>(IReadOnlyList<T> options, int count)
+    {
+        int optionsCount = options.Count;
+        int len = count;
+        int[] i = new int[len];
+        while (true)
+        {
+            yield return i.Select(x => options[x]).ToArray();
+            
+            i[0]++;
+            for (int j = 0; i[j] >= optionsCount && j < len - 1; j++)
+            {
+                i[j] = 0;
+                i[j + 1]++;
+            }
+            if (i[len-1] == optionsCount)
+                yield break;
+        }
     }
 }
