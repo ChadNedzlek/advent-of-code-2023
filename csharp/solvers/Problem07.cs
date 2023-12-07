@@ -129,13 +129,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             }
             private static HandRank CalculateCategory(ImmutableList<int> matches)
             {
-                return matches[0] switch
+                return matches switch
                 {
-                    1 => HandRank.HighCard,
-                    2 => matches[1] == 2 ? HandRank.TwoPair : HandRank.Pair,
-                    3 => matches[1] == 2 ? HandRank.FullHouse : HandRank.ThreeOfAKind,
-                    4 => HandRank.FourOfAKind,
-                    5 => HandRank.FiveOfAKind,
+                    [5] => HandRank.FiveOfAKind,
+                    [4,1] => HandRank.FourOfAKind,
+                    [3,2] => HandRank.FullHouse,
+                    [3,1,1] => HandRank.ThreeOfAKind,
+                    [2,2,1] => HandRank.TwoPair,
+                    [2,1,1,1] => HandRank.Pair,
+                    _ => HandRank.HighCard
                 };
             }
 
