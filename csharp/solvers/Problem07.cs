@@ -9,20 +9,22 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class Problem07 : DualAsyncProblemBase
     {
-        protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart1Async(string[] data)
         {
             await CalculateHands(data, false);
         }
 
-        protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart2Async(string[] data)
         {
             await CalculateHands(data, true);
         }
 
-        private static async Task CalculateHands(IAsyncEnumerable<string> data, bool wilds)
+        private static async Task CalculateHands(string[] data, bool wilds)
         {
-            var list = await data.Select(d => d.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-                .Select(a => new Hand(a[0], long.Parse(a[1]), wilds)).OrderBy(x => x).ToListAsync();
+            var list = data
+                .Select(d => d.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                .Select(a => new Hand(a[0], long.Parse(a[1]), wilds)).OrderBy(x => x)
+                .ToList();
             var values = list.Select((h, i) => (Hand: h, Total: h.Bid * (i + 1))).ToList();
             if (Helpers.IncludeVerboseOutput)
             {
@@ -59,10 +61,10 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 string best = Values;
                 HandRank bestCat = CalculateCategory(best);
                 string f = Values.Replace("J", "");
-                // We only need to try the cards in the hand, since only sets count
-                List<char> inHand = f.Distinct().ToList();
                 if (f.Length == Values.Length || f.Length == 0)
                     return Values;
+                // We only need to try the cards in the hand, since only sets count
+                List<char> inHand = f.Distinct().ToList();
 
                 foreach (var perm in Algorithms.Permute(inHand, Values.Length - f.Length))
                 {
@@ -122,11 +124,11 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 return matches switch
                 {
                     [5] => HandRank.FiveOfAKind,
-                    [4,1] => HandRank.FourOfAKind,
+                    [4,..] => HandRank.FourOfAKind,
                     [3,2] => HandRank.FullHouse,
-                    [3,1,1] => HandRank.ThreeOfAKind,
-                    [2,2,1] => HandRank.TwoPair,
-                    [2,1,1,1] => HandRank.Pair,
+                    [3,..] => HandRank.ThreeOfAKind,
+                    [2,2,..] => HandRank.TwoPair,
+                    [2,..] => HandRank.Pair,
                     _ => HandRank.HighCard
                 };
             }
@@ -154,8 +156,6 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
             public int Rank(char c)
             {
-                if (char.IsDigit(c))
-                    return c - '0';
                 return c switch
                 {
                     'T' => 10,
@@ -163,6 +163,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     'Q' => 12,
                     'K' => 13,
                     'A' => 14,
+                    _ => c - '0',
                 };
             }
         }

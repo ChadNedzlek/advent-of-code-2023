@@ -11,9 +11,9 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class Problem02 : DualAsyncProblemBase
     {
-        protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart1Async(string[] data)
         {
-            Console.WriteLine("AI version: " + CheckGamePossibility(await data.ToListAsync(), 12, 13, 14));
+            Console.WriteLine("AI version: " + CheckGamePossibility(data, 12, 13, 14));
             
             Dictionary<string, int> counts = new()
             {
@@ -22,7 +22,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 ["blue"] = 14,
             };
             long total = 0;
-            await foreach (string[] line in data.Select(d => d.Split(':')))
+            foreach (string[] line in data.Select(d => d.Split(':')))
             {
                 long id = long.Parse(line[0].Split(' ')[1]);
                 bool valid = IsValidGame(line, counts);
@@ -37,7 +37,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Total = {total}");
         }
 
-        public static int CheckGamePossibility(List<string> games, int redCube, int greenCube, int blueCube)
+        public static int CheckGamePossibility(string[] games, int redCube, int greenCube, int blueCube)
         {
             int total = 0;
             foreach (var game in games)

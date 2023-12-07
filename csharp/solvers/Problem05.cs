@@ -11,13 +11,13 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class Problem05 : DualAsyncProblemBase
     {
-        protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart1Async(string[] data)
         {
             string startLabel = null;
             List<long> start = null;
             Dictionary<string, (string target, List<MapRange> ranges)> mappings = new();
             List<MapRange> currentRanges = null;
-            await foreach (var line in data)
+            foreach (var line in data)
             {
                 if (startLabel == null)
                 {
@@ -64,13 +64,13 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             return ranges.Select(r => r.Map(input)).FirstOrDefault(x => x != null) ?? input;
         }
 
-        protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart2Async(string[] data)
         {
             string startLabel = null;
             List<RangeL> start = null;
             Dictionary<string, (string target, List<MapRange> ranges)> mappings = new();
             List<MapRange> currentRanges = null;
-            await foreach (var line in data)
+            foreach (var line in data)
             {
                 if (startLabel == null)
                 {

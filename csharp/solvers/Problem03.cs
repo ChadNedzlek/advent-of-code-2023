@@ -11,13 +11,12 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class Problem03 : DualAsyncProblemBase
     {
-        protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart1Async(string[] data)
         {
-            var parts = await data.ToListAsync();
             var symbols = new List<Point2I>();
-            for (var y = 0; y < parts.Count; y++)
+            for (var y = 0; y < data.Length; y++)
             {
-                string part = parts[y];
+                string part = data[y];
                 for (var x = 0; x < part.Length; x++)
                 {
                     var l = part[x];
@@ -42,15 +41,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             foreach (var p in symbols)
             {
                 HashSet<long> ratios = new();
-                var s = parts[p.Y][p.X];
-                ratios.Add(GetNumber(parts, p.Add(-1, -1)));
-                ratios.Add(GetNumber(parts, p.Add(0, -1)));
-                ratios.Add(GetNumber(parts, p.Add(1, -1)));
-                ratios.Add(GetNumber(parts, p.Add(-1, 0)));
-                ratios.Add(GetNumber(parts, p.Add(1, 0)));
-                ratios.Add(GetNumber(parts, p.Add(-1, 1)));
-                ratios.Add(GetNumber(parts, p.Add(0, 1)));
-                ratios.Add(GetNumber(parts, p.Add(1, 1)));
+                var s = data[p.Y][p.X];
+                ratios.Add(GetNumber(data, p.Add(-1, -1)));
+                ratios.Add(GetNumber(data, p.Add(0, -1)));
+                ratios.Add(GetNumber(data, p.Add(1, -1)));
+                ratios.Add(GetNumber(data, p.Add(-1, 0)));
+                ratios.Add(GetNumber(data, p.Add(1, 0)));
+                ratios.Add(GetNumber(data, p.Add(-1, 1)));
+                ratios.Add(GetNumber(data, p.Add(0, 1)));
+                ratios.Add(GetNumber(data, p.Add(1, 1)));
                 ratios.Remove(0);
 
                 foreach (var value in ratios)
@@ -60,7 +59,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Total {total}");
         }
 
-        private long GetNumber(List<string> parts, Point2I p)
+        private long GetNumber(string[] parts, Point2I p)
         {
             if (!parts.TryGet(p.Y, p.X, out char c))
                 return 0;
@@ -81,13 +80,12 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             return long.Parse(line[s..(e + 1)]);
         }
 
-        protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart2Async(string[] data)
         {
-            var parts = await data.ToListAsync();
             var symbols = new List<Point2I>();
-            for (var y = 0; y < parts.Count; y++)
+            for (var y = 0; y < data.Length; y++)
             {
-                string part = parts[y];
+                string part = data[y];
                 for (var x = 0; x < part.Length; x++)
                 {
                     var l = part[x];
@@ -103,15 +101,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             foreach (var p in symbols)
             {
                 HashSet<long> ratios = new();
-                var s = parts[p.Y][p.X];
-                ratios.Add(GetNumber(parts, p.Add(-1, -1)));
-                ratios.Add(GetNumber(parts, p.Add(0, -1)));
-                ratios.Add(GetNumber(parts, p.Add(1, -1)));
-                ratios.Add(GetNumber(parts, p.Add(-1, 0)));
-                ratios.Add(GetNumber(parts, p.Add(1, 0)));
-                ratios.Add(GetNumber(parts, p.Add(-1, 1)));
-                ratios.Add(GetNumber(parts, p.Add(0, 1)));
-                ratios.Add(GetNumber(parts, p.Add(1, 1)));
+                var s = data[p.Y][p.X];
+                ratios.Add(GetNumber(data, p.Add(-1, -1)));
+                ratios.Add(GetNumber(data, p.Add(0, -1)));
+                ratios.Add(GetNumber(data, p.Add(1, -1)));
+                ratios.Add(GetNumber(data, p.Add(-1, 0)));
+                ratios.Add(GetNumber(data, p.Add(1, 0)));
+                ratios.Add(GetNumber(data, p.Add(-1, 1)));
+                ratios.Add(GetNumber(data, p.Add(0, 1)));
+                ratios.Add(GetNumber(data, p.Add(1, 1)));
                 ratios.Remove(0);
 
                 if (ratios.Count == 2)

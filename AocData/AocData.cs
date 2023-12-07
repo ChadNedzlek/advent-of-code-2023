@@ -29,7 +29,7 @@ namespace ChadNedzlek.AdventOfCode.DataModule
             _year = year;
         }
 
-        public async Task<StreamReader> GetDataAsync(int day)
+        public async Task<string[]> GetDataAsync(int day)
         {
             string dir = Path.Combine(RootFolder, _year.ToString());
             Directory.CreateDirectory(dir);
@@ -50,7 +50,7 @@ namespace ChadNedzlek.AdventOfCode.DataModule
                 await httpStream.CopyToAsync(cacheStream);
             }
 
-            return File.OpenText(targetPath);
+            return File.ReadAllLines(targetPath);
         }
 
         private async Task<string> GetAccessTokenAsync()

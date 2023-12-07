@@ -11,10 +11,10 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class Problem04 : DualAsyncProblemBase
     {
-        protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart1Async(string[] data)
         {
             int total = 0;
-            await foreach (var line in data)
+            foreach (var line in data)
             {
                 (string name, string values) = line.Split(':');
                 (string wins, string haves) = values.Split('|');
@@ -29,12 +29,12 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Points {total}");
         }
 
-        protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart2Async(string[] data)
         {
             long total = 0;
             int i = 0;
             Dictionary<int,long> mult = new() { { 0, 1 } };
-            await foreach (var line in data)
+            foreach (var line in data)
             {
                 long curMult = mult.GetValueOrDefault(i, 1);
                 total += curMult;

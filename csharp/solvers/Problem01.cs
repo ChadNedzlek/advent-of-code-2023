@@ -10,16 +10,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class Problem01 : AsyncProblemBase
     {
-        protected override async Task ExecuteCoreAsync(IAsyncEnumerable<string> data)
+        protected override async Task ExecuteCoreAsync(string[] data)
         {
-            var list = await data.ToListAsync();
-            var part1 = list.Select(d => Regex.Replace(d, "[a-z]", ""))
+            var part1 = data.Select(d => Regex.Replace(d, "[a-z]", ""))
                 .Where(d => d.Length != 0)
                 .Select(d => d.Length == 2 ? d : $"{d[0]}{d[^1]}").ToList();
             Console.WriteLine($"Lines: {string.Join(", ", part1)}");
             Console.WriteLine($"Sum: {part1.Select(int.Parse).Sum()}");
 
-            IEnumerable<string> replLines = TranslateLines(list)
+            IEnumerable<string> replLines = TranslateLines(data)
                 .ToList();
             Console.WriteLine($"Repl lines: {string.Join("\n", replLines)}");
             var part2 = replLines
@@ -29,7 +28,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Spelly Sum: {part2.Select(int.Parse).Sum()}");
         }
 
-        private static IEnumerable<string> TranslateLines(List<string> list)
+        private static IEnumerable<string> TranslateLines(string[] list)
         {
             foreach (var line in list)
             {

@@ -10,12 +10,12 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 {
     public class SampleProblem : DualAsyncProblemBase
     {
-        protected override async Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart1Async(string[] data)
         {
            
         }
 
-        protected override async Task ExecutePart2Async(IAsyncEnumerable<string> data)
+        protected override async Task ExecutePart2Async(string[] data)
         {
             await base.ExecutePart2Async(data);
         }

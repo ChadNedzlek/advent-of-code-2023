@@ -12,33 +12,24 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
     [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors)]
     public abstract class AsyncProblemBase : IProblemBase
     {
-        public Task ExecuteAsync(string type = "real")
+        public async Task ExecuteAsync(string type = "real")
         {
             var m = Regex.Match(GetType().Name, @"Problem(\d+)$");
             var id = int.Parse(m.Groups[1].Value);
-            var data = Data.GetDataAsync(id, type);
+            var data = await Data.GetDataAsync(id, type);
             if (this is IFancyAsyncProblem fancy)
-                return fancy.ExecuteFancyAsync(data);
-            return ExecuteCoreAsync(data);
+                await fancy.ExecuteFancyAsync(data);
+            else 
+                await ExecuteCoreAsync(data);
         }
 
-        protected abstract Task ExecuteCoreAsync(IAsyncEnumerable<string> data);
+        protected abstract Task ExecuteCoreAsync(string[] data);
     }
     
     [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors)]
-    public abstract class DualAsyncProblemBase : IProblemBase
+    public class DualAsyncProblemBase : AsyncProblemBase
     {
-        public Task ExecuteAsync(string type = "real")
-        {
-            var m = Regex.Match(GetType().Name, @"Problem(\d+)$");
-            var id = int.Parse(m.Groups[1].Value);
-            var data = Data.GetDataAsync(id, type);
-            if (this is IFancyAsyncProblem fancy)
-                return fancy.ExecuteFancyAsync(data);
-            return ExecuteCoreAsync(data);
-        }
-
-        protected virtual async Task ExecuteCoreAsync(IAsyncEnumerable<string> data)
+        protected override async Task ExecuteCoreAsync(string[] data)
         {
             var s = Stopwatch.StartNew();
             try
@@ -52,12 +43,12 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Helpers.VerboseLine($"Elapsed: {s.Elapsed}");
         }
 
-        protected virtual Task ExecutePart1Async(IAsyncEnumerable<string> data)
+        protected virtual Task ExecutePart1Async(string[] data)
         {
             return Task.CompletedTask;
         }
         
-        protected virtual Task ExecutePart2Async(IAsyncEnumerable<string> data)
+        protected virtual Task ExecutePart2Async(string[] data)
         {
             throw new HalfDoneException();
         }
@@ -79,7 +70,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         {
             var m = Regex.Match(GetType().Name, @"Problem(\d+)$");
             var id = int.Parse(m.Groups[1].Value);
-            var data = await Data.GetDataAsync(id, type).ToListAsync();
+            var data = await Data.GetDataAsync(id, type);
             if (this is IFancyProblem fancy)
                 fancy.ExecuteFancy(data);
             else
@@ -91,7 +82,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
     public interface IFancyAsyncProblem
     {
-        Task ExecuteFancyAsync(IAsyncEnumerable<string> data);
+        Task ExecuteFancyAsync(string[] data);
     }
     
     public interface IFancyProblem
