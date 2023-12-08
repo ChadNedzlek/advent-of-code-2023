@@ -65,7 +65,7 @@ public static class Helpers
 
     public static int PosMod(this int x, int q) => (x % q + q) % q;
         
-    public static int Gcd(int num1, int num2)
+    public static long Gcd(long num1, long num2)
     {
         while (num1 != num2)
         {
@@ -78,7 +78,7 @@ public static class Helpers
         return num1;
     }
   
-    public static int Lcm(int num1, int num2)
+    public static long Lcm(long num1, long num2)
     {
         return (num1 * num2) / Gcd(num1, num2);
     }
