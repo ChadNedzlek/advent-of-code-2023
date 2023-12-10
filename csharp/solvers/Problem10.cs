@@ -141,11 +141,24 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     for (int c = 0; c < cCols; c++)
                     {
                         if (dist[r,c] == 0)
-                            Helpers.Verbose(". ");
+                            Helpers.Verbose(".");
                         else if (dist[r,c] == -1)
-                            Helpers.Verbose("* ");
+                            Helpers.Verbose("\u2588");
                         else
-                            Helpers.Verbose($"{dist[r,c]%10} ");
+                        {
+                            char box = data[r][c] switch
+                            {
+                                '-' => '\u2550',
+                                '|' => '\u2551',
+                                'F' => '\u2554',
+                                'L' => '\u255A',
+                                '7' => '\u2557',
+                                'J' => '\u255D',
+                                var x => x,
+                            };
+                            Helpers.Verbose(box.ToString());
+                            // Helpers.Verbose($"{dist[r, c] % 10} ");
+                        }
                     }
                     Helpers.VerboseLine("");
                 }
