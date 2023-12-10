@@ -12,7 +12,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
     {
         protected override async Task ExecutePart1Async(string[] data)
         {
-           
+            
         }
 
         protected override async Task ExecutePart2Async(string[] data)

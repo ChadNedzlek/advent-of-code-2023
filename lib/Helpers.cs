@@ -230,4 +230,33 @@ public static class Helpers
         value = l[i2];
         return true;
     }
+        
+    public static bool TrySet<T>(this T[,] input, int i1, int i2, T value)
+    {
+        if (i1 < 0 || i1 >= input.GetLength(0))
+        {
+            return false;
+        }
+        if (i2 < 0 || i2 >= input.GetLength(1))
+        {
+            return false;
+        }
+
+        input[i1, i2] = value;
+        return true;
+    }
+        
+    public static bool IsInRange<T>(this T[,] input, int i1, int i2)
+    {
+        if (i1 < 0 || i1 >= input.GetLength(0))
+        {
+            return false;
+        }
+        if (i2 < 0 || i2 >= input.GetLength(1))
+        {
+            return false;
+        }
+        
+        return true;
+    }
 }
