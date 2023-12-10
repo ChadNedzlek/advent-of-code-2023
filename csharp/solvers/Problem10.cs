@@ -82,6 +82,14 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
             long highest = dist.Cast<long>().Max();
 
+            
+            // There are only 2 possible configurations for a "piece" of the pipe that we'd see
+            // in a row that are part of the loop, either a simple '|',
+            // or a segment that looks like [FL]-*[7J]
+            // We want to count the number of times we "cross" the pipe scanning each row
+            // F--7 (and L--J) don't count, because they are just "bumps" we don't cross,
+            // we are still on the same side of the polygon
+            // F--J, L--7, and | all count as crossing from inside to outside (or the reverse)
             long insideCount = 0;
             for (int r = 0; r < cRows; r++)
             {
@@ -91,6 +99,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 {
                     if (dist[r, c] == 0)
                     {
+                        // It's some point that wasn't part of the loop! Count it (if it's inside)
                         if (inside)
                         {
                             insideCount++;
@@ -100,20 +109,25 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     else
                     {
                         char cur = GetMap(r, c);
+                        // Check to see if we crossed a "vertical" segment of pipe
                         if (cur == '|')
                             inside = !inside;
                         else if (cur == 'J')
                         {
+                            // If we are at a J, then a "veritical" piece of pipe is
+                            // "F--J", so only flip if we see the 'F'
                             if (bend == 'F')
                                 inside = !inside;
                             bend = '-';
                         }
                         else if (cur == '7')
                         {
+                            // only "L--7" is a bend
                             if (bend == 'L')
                                 inside = !inside;
                             bend = '-';
                         }
+                        // If it was F or L, we are at the beginning of a bend, save it to check at the end
                         else if ("FL".Contains(cur))
                             bend = cur;
                     }
