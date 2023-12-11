@@ -22,22 +22,22 @@ public readonly record struct Point2L(long X, long Y) : IConvertable<(long x, lo
     }
 }
 
-public readonly record struct Point2I(int X, int Y) : IConvertable<(int x, int y), Point2I>
+public readonly record struct Point2I(int Row, int Col) : IConvertable<(int row, int col), Point2I>
 {
-    public static implicit operator Point2I((int x, int y) p) => new(p.x, p.y);
+    public static implicit operator Point2I((int row, int col) p) => new(p.row, p.col);
 
     public Point2I Add(Point2I d)
     {
-        return new Point2I(d.X + X, d.Y + Y);
+        return new Point2I(d.Row + Row, d.Col + Col);
     }
 
     public Point2I Add(int dx, int dy)
     {
-        return new Point2I(dx + X, dy + Y);
+        return new Point2I(dx + Row, dy + Col);
     }
 
     public bool Equals(int x, int y)
     {
-        return X == x && Y == y;
+        return Row == x && Col == y;
     }
 }

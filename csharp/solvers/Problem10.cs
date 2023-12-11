@@ -62,7 +62,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                 }
             }
 
-            MarkNeighbors(s.X, s.Y, 0);
+            MarkNeighbors(s.Row, s.Col, 0);
 
             bool runLoop = true;
             for (int d = 1; runLoop; d++)
