@@ -15,7 +15,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         {
             int cRow = data.Length;
             int cCol = data[0].Length;
-            (long[,] costs, HashSet<Point2I> galaxies) = InitializeCosts(data, cRow, cCol, 2);
+            (long[,] costs, HashSet<GPoint2I> galaxies) = InitializeCosts(data, cRow, cCol, 2);
             long total = 0;
             foreach (var g in galaxies)
             {
@@ -53,9 +53,9 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Total distance : {total}");
         }
 
-        private static (long[,] costs, HashSet<Point2I> galaxies) InitializeCosts(string[] data, int cRow, int cCol, int mult)
+        private static (long[,] costs, HashSet<GPoint2I> galaxies) InitializeCosts(string[] data, int cRow, int cCol, int mult)
         {
-            HashSet<Point2I> galaxies = new HashSet<Point2I>();
+            HashSet<GPoint2I> galaxies = new HashSet<GPoint2I>();
             long[,] costs = new long[cRow, cCol];
             for (int r = 0; r < cRow; r++)
             {
@@ -65,7 +65,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     if (data[r][c] != '.')
                     {
                         empty = false;
-                        galaxies.Add(new Point2I(r, c));
+                        galaxies.Add(new GPoint2I(r, c));
                     }
                 }
                 for (int c = 0; c < cCol; c++)
@@ -97,7 +97,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         {
             int cRow = data.Length;
             int cCol = data[0].Length;
-            (long[,] costs, HashSet<Point2I> galaxies) = InitializeCosts(data, cRow, cCol, 1_000_000);
+            (long[,] costs, HashSet<GPoint2I> galaxies) = InitializeCosts(data, cRow, cCol, 1_000_000);
             long total = 0;
             foreach (var g in galaxies)
             {

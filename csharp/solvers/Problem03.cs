@@ -13,7 +13,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
     {
         protected override async Task ExecutePart1Async(string[] data)
         {
-            var symbols = new List<Point2I>();
+            var symbols = new List<GPoint2I>();
             for (var y = 0; y < data.Length; y++)
             {
                 string part = data[y];
@@ -59,7 +59,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Total {total}");
         }
 
-        private long GetNumber(string[] parts, Point2I p)
+        private long GetNumber(string[] parts, GPoint2I p)
         {
             if (!parts.TryGet(p.Col, p.Row, out char c))
                 return 0;
@@ -82,7 +82,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
 
         protected override async Task ExecutePart2Async(string[] data)
         {
-            var symbols = new List<Point2I>();
+            var symbols = new List<GPoint2I>();
             for (var y = 0; y < data.Length; y++)
             {
                 string part = data[y];

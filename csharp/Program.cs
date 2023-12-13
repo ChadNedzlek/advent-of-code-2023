@@ -13,7 +13,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             string dataType = "real";
             bool menu = false;
@@ -21,12 +21,20 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
             var os = new OptionSet
             {
                 { "example", v => dataType = "example" },
+                { "test", v => dataType = "test" },
+                { "test-only", v => dataType = "test-exit" },
                 { "prompt|p", v => menu = (v != null) },
                 { "verbose|v", v => Helpers.IncludeVerboseOutput = (v != null) },
                 { "puzzle=", v => puzzle = int.Parse(v) },
             };
 
-            os.Parse(args);
+            var left = os.Parse(args);
+            if (left.Count != 0)
+            {
+                Console.Error.WriteLine($"Unknown argument '{left[0]}'");
+                return 1;
+            }
+
             Dictionary<int, IProblemBase> problems = new Dictionary<int, IProblemBase>();
 
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
@@ -41,7 +49,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
             if (puzzle != 0)
             {
                 await problems[puzzle].ExecuteAsync(dataType);
-                return;
+                return 0;
             }
 
             if (menu)
@@ -52,13 +60,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp
                         .AddChoices(problems.Keys.OrderBy(i => i)));
 
                 await problems[problem].ExecuteAsync(dataType);
-                return;
+                return 0;
             }
 
             {
                 var problem = problems.MaxBy(p => p.Key).Value;
                 await problem.ExecuteAsync(dataType);
             }
+
+            return 0;
         }
     }
 }

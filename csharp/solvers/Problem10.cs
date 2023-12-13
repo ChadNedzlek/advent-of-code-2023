@@ -17,71 +17,21 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         {
             int cRows = data.Length;
             int cCols = data[0].Length;
-            long [,] dist = new long[cRows, cCols];
 
-            Point2I s = new();
+            GPoint2I s = new();
             char sl = '\0';
-            for (int r = 0; r < cRows; r++)
+            FixStart(data, cRows, cCols);
+            long[,] dist = Algorithms.DistanceFill(data, s, p => GetMap(p.Row, p.Col) switch
             {
-                for (int c = 0; c < cCols; c++)
-                {
-                    if (data[r][c] == 'S')
-                    {
-                        s = new(r, c);
-                        if (data.TryGet(r - 1, c, out var l) && "|F7".Contains(l))
-                        {
-                            if (data.TryGet(r, c - 1, out l) && "-FL".Contains(l))
-                            {
-                                sl = 'J';
-                            }
-                            else if (data.TryGet(r, c + 1, out l) && "-J7".Contains(l))
-                            {
-                                sl = 'L';
-                            }
-                            else
-                            {
-                                sl = '|';
-                            }
-                        }
-                        else if (data.TryGet(r + 1, c, out l) && "|LJ".Contains(l))
-                        {
-                            if (data.TryGet(r, c - 1, out l) && "-FL".Contains(l))
-                            {
-                                sl = '7';
-                            }
-                            else
-                            {
-                                sl = 'F';
-                            }
-                        }
-                        else
-                        {
-                            sl = '-';
-                        }
-                    }
-                }
-            }
-
-            MarkNeighbors(s.Row, s.Col, 0);
-
-            bool runLoop = true;
-            for (int d = 1; runLoop; d++)
-            {
-                runLoop = false;
-                for (int r = 0; r < cRows; r++)
-                {
-                    for (int c = 0; c < cCols; c++)
-                    {
-                        if (dist[r,c] == d)
-                        {
-                            runLoop |= MarkNeighbors(r, c, d);
-                        }
-                    }
-                }
-            }
+                '-' => new[]{p.Add(0, 1), p.Add(0, -1)},
+                '|' => new[]{p.Add(1, 0), p.Add(-1, 0)},
+                'F' => new[]{p.Add(0, 1), p.Add(1, 0)},
+                'L' => new[]{p.Add(0, 1), p.Add(-1, 0)},
+                '7' => new[]{p.Add(0, -1), p.Add(1, 0)},
+                'J' => new[]{p.Add(0, -1), p.Add(-1, 0)},
+            });
 
             long highest = dist.Cast<long>().Max();
-
             
             // There are only 2 possible configurations for a "piece" of the pipe that we'd see
             // in a row that are part of the loop, either a simple '|',
@@ -167,33 +117,55 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Console.WriteLine($"Furthest point is {highest}");
             Console.WriteLine($"Enclosed points {insideCount}");
 
-            bool TrySetMin(int r, int c, long d)
-            {
-                if (dist[r, c] != 0 && dist[r, c] < d)
-                    return false;
-
-                dist[r, c] = d;
-                return true;
-            }
-
-            bool MarkNeighbors(int r, int c, int d)
-            {
-                var l = GetMap(r, c);
-                return l switch
-                {
-                    '.' => false,
-                    '|' => TrySetMin(r - 1, c, d + 1) | TrySetMin(r + 1, c, d + 1),
-                    '-' => TrySetMin(r, c - 1, d + 1) | TrySetMin(r, c + 1, d + 1),
-                    'L' => TrySetMin(r - 1, c, d + 1) | TrySetMin(r, c + 1, d + 1),
-                    'J' => TrySetMin(r - 1, c, d + 1) | TrySetMin(r, c - 1, d + 1),
-                    '7' => TrySetMin(r + 1, c, d + 1) | TrySetMin(r, c - 1, d + 1),
-                    'F' => TrySetMin(r + 1, c, d + 1) | TrySetMin(r, c + 1, d + 1),
-                };
-            }
-
             char GetMap(int r, int c)
             {
-                return s == new Point2I(r, c) ? sl : data[r][c];
+                return s == new GPoint2I(r, c) ? sl : data[r][c];
+            }
+        }
+
+        private static void FixStart(string[] data, int cRows, int cCols)
+        {
+            GPoint2I s;
+            char sl;
+            for (int r = 0; r < cRows; r++)
+            {
+                for (int c = 0; c < cCols; c++)
+                {
+                    if (data[r][c] == 'S')
+                    {
+                        s = new(r, c);
+                        if (data.TryGet(r - 1, c, out var l) && "|F7".Contains(l))
+                        {
+                            if (data.TryGet(r, c - 1, out l) && "-FL".Contains(l))
+                            {
+                                sl = 'J';
+                            }
+                            else if (data.TryGet(r, c + 1, out l) && "-J7".Contains(l))
+                            {
+                                sl = 'L';
+                            }
+                            else
+                            {
+                                sl = '|';
+                            }
+                        }
+                        else if (data.TryGet(r + 1, c, out l) && "|LJ".Contains(l))
+                        {
+                            if (data.TryGet(r, c - 1, out l) && "-FL".Contains(l))
+                            {
+                                sl = '7';
+                            }
+                            else
+                            {
+                                sl = 'F';
+                            }
+                        }
+                        else
+                        {
+                            sl = '-';
+                        }
+                    }
+                }
             }
         }
 

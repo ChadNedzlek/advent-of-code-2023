@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -323,6 +324,38 @@ public abstract class Algorithms
     {
         return BreadthFirstSearch<TState, int, int>(initial, nextStates, isBetterState, null, null, null);
     }
+   
+    public static long[,] DistanceFill(string[] input, GPoint2I start,
+        Func<GPoint2I, IEnumerable<GPoint2I>> movePoints) =>
+        DistanceFill(input, start, p => movePoints(p).Select(m => (m, 1L)));
+
+    public static long[,] DistanceFill(string[] input, GPoint2I start, Func<GPoint2I, IEnumerable<(GPoint2I, long)>> movePoints)
+    {
+        long[,] res = new long[input.Length,input[0].Length];
+        for (var r = 0; r < res.GetLength(0); r++)
+        for (var c = 0; c < res.GetLength(1); c++)
+        {
+            res[r, c] = -1;
+        }
+
+        res[start.Row, start.Col] = 0;
+
+        Queue<(GPoint2I p, long d)> q = new();
+        q.Enqueue((start, 0));
+        while (q.TryDequeue(out (GPoint2I p, long d) x))
+        {
+            (GPoint2I p, long d) = x;
+            foreach ((GPoint2I target, long cost) m in movePoints(p))
+            {
+                if (res[m.target.Row, m.target.Col] == -1)
+                {
+                    res[m.target.Row, m.target.Col] = d + m.cost;
+                    q.Enqueue((m.target, d + m.cost));
+                }
+            }
+        }
+        return res;
+    }
 
     /// <summary>
     /// Get both solutions to a quadratic equation in the form a*x^2 + b*x + c = 0
@@ -359,6 +392,67 @@ public abstract class Algorithms
             }
             if (i[len-1] == optionsCount)
                 yield break;
+        }
+    }
+
+    public static IEnumerable<char[]> Permute(string options, int count)
+    {
+        int optionsCount = options.Length;
+        int len = count;
+        int[] i = new int[len];
+        while (true)
+        {
+            yield return i.Select(x => options[x]).ToArray();
+            
+            i[0]++;
+            for (int j = 0; i[j] >= optionsCount && j < len - 1; j++)
+            {
+                i[j] = 0;
+                i[j + 1]++;
+            }
+            if (i[len-1] == optionsCount)
+                yield break;
+        }
+    }
+
+    public static IEnumerable<ImmutableList<int>> Distribute(int total, int buckets)
+    {
+        if (buckets == 1)
+        {
+            yield return ImmutableList.Create(total);
+            yield break;
+        }
+
+        int[] b = new int[buckets];
+        b[0] = total;
+        while (true)
+        {
+            yield return b.ToImmutableList();
+            
+            b[0]--;
+            b[1]++;
+
+            if (b[0] == -1)
+            {
+                if (buckets == 2)
+                    yield break;
+                
+                b[2]++;
+                for (int i = 2; i<buckets-1 && b[2..].Sum() > total; i++)
+                {
+                    b[i] = 0;
+                    b[i + 1]++;
+                }
+
+                b[1] = 0;
+                b[0] = 0;
+                b[0] = total - b.Sum();
+            }
+
+            if (b[0] == 0)
+            {
+                yield break;
+            }
         }
     }
 }

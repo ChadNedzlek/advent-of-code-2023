@@ -259,4 +259,63 @@ public static class Helpers
         
         return true;
     }
+
+    public static IEnumerable<int> RangeInc(int start, int end)
+    {
+        if (end < start)
+            (end, start) = (start, end);
+
+        if (end == start)
+            return Array.Empty<int>();
+        
+        return Enumerable.Range(start, end - start + 1);
+    }
+
+    public static Dictionary<TSource, int> CountBy<TSource>(this IEnumerable<TSource> input) => CountBy(input, i => i);
+
+    public static Dictionary<TResult, int> CountBy<TSource, TResult>(this IEnumerable<TSource> input, Func<TSource, TResult> selector)
+    {
+        return input.GroupBy(selector).ToDictionary(g => g.Key, g => g.Count());
+    }
+
+    public static IEnumerable<ImmutableList<T>> SplitWhen<T>(this IEnumerable<T> input, Func<T, bool> when, bool skipEmpty = true)
+    {
+        var b = ImmutableList.CreateBuilder<T>();
+        foreach (var t in input)
+        {
+            if (when(t))
+            {
+                if (b.Count == 0)
+                    continue;
+                yield return b.ToImmutable();
+                b.Clear();
+                continue;
+            }
+
+            b.Add(t);
+        }
+        if (b.Count == 0)
+            yield break;
+        yield return b.ToImmutable();
+    }
+
+    public static string ReplaceOnce(this string s, char c, char r)
+    {
+        int i = s.IndexOf(c);
+        return s[..i] + r + s[(i+1)..];
+    }
+
+    public static string RemStart(this string s, int len)
+    {
+        if (s.Length <= len)
+            return "";
+        return s[len..];
+    }
+
+    public static string RemEnd(this string s, int len)
+    {
+        if (s.Length <= len)
+            return "";
+        return s[..^len];
+    }
 }

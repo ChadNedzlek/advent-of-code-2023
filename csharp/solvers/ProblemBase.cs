@@ -14,13 +14,30 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
     {
         public async Task ExecuteAsync(string type = "real")
         {
+            if (type.StartsWith("test"))
+            {
+                await ExecuteTests();
+
+                if (type.EndsWith("exit"))
+                    return;
+
+                type = "example";
+            }
+            
             var m = Regex.Match(GetType().Name, @"Problem(\d+)$");
             var id = int.Parse(m.Groups[1].Value);
             var data = await Data.GetDataAsync(id, type);
+
+
             if (this is IFancyAsyncProblem fancy)
                 await fancy.ExecuteFancyAsync(data);
             else 
                 await ExecuteCoreAsync(data);
+        }
+
+        protected virtual Task ExecuteTests()
+        {
+            return Task.CompletedTask;
         }
 
         protected abstract Task ExecuteCoreAsync(string[] data);

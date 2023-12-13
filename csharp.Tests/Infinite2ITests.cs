@@ -74,4 +74,5 @@ public class Infinite2ITests
         value.TrySet(5, 5, 500);
         value[5, 5].Should().Be(500);
     }
+    
 }
