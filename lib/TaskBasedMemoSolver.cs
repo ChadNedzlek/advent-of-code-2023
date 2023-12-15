@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace ChadNedzlek.AdventOfCode.Library;
 
-public class TaskBasedMemoSolver<TState, TSolution> where TState : ITaskMemoState<TState, TSolution>, IEquatable<TState>
+public interface IAsyncSolver<TState, TSolution>
+{
+    Task<TSolution> GetSolutionAsync(TState state);
+}
+
+public class TaskBasedMemoSolver<TState, TSolution> : IAsyncSolver<TState, TSolution> where TState : ITaskMemoState<TState, TSolution>, IEquatable<TState>
 {
     private static readonly Dictionary<TState, TSolution> _solveCache = new();
+    private static readonly CustomTaskFactory _custom = new();
 
-    private static readonly CustomTaskFactory _custom = new CustomTaskFactory();
+    Task<TSolution> IAsyncSolver<TState, TSolution>.GetSolutionAsync(TState state) => GetSolutionAsync(state);
 
-    public Task<TSolution> GetSolutionAsync(TState state)
+    private Task<TSolution> GetSolutionAsync(TState state)
     {
-        if (_solveCache.TryGetValue(state, out var sol))
+        if (_solveCache.TryGetValue(state, out TSolution sol))
         {
             return Task.FromResult(sol);
         }
@@ -87,5 +93,5 @@ public class TaskBasedMemoSolver<TState, TSolution> where TState : ITaskMemoStat
 
 public interface ITaskMemoState<TState, TSolution> where TState : ITaskMemoState<TState, TSolution>, IEquatable<TState> 
 {
-    Task<TSolution> Solve(TaskBasedMemoSolver<TState, TSolution> solver);
+    Task<TSolution> Solve(IAsyncSolver<TState, TSolution> solver);
 }
