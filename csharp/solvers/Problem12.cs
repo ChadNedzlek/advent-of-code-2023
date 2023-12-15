@@ -93,7 +93,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             public ImmutableList<int> Counts { get; }
             public string Signature { get; }
             
-            public async Task<long> Solve(TaskBasedMemoSolver<TaskSolveState, long> solver)
+            public async Task<long> Solve(IAsyncSolver<TaskSolveState, long> solver)
             {
                 if (Pattern == "")
                     return Counts.Count == 0 ? 1 : 0;
