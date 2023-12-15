@@ -9,15 +9,13 @@ namespace ChadNedzlek.AdventOfCode.Library;
 public class TaskBasedMemoSolver<TState, TSolution> where TState : ITaskMemoState<TState, TSolution>, IEquatable<TState>
 {
     private static readonly Dictionary<TState, TSolution> _solveCache = new();
-    public int CacheHits { get; private set; } 
 
-    private static readonly TaskFactory _custom = new CustomTaskFactory();
+    private static readonly CustomTaskFactory _custom = new CustomTaskFactory();
 
-    public Task<TSolution> Solve(TState state)
+    public Task<TSolution> GetSolutionAsync(TState state)
     {
         if (_solveCache.TryGetValue(state, out var sol))
         {
-            CacheHits++;
             return Task.FromResult(sol);
         }
 
@@ -33,25 +31,18 @@ public class TaskBasedMemoSolver<TState, TSolution> where TState : ITaskMemoStat
         }
     }
 
+    public TSolution Solve(TState state)
+    {
+        _ = GetSolutionAsync(state);
+        _custom.WaitForAllTasks();
+        return _solveCache[state];
+    }
+
     internal class CustomTaskFactory : TaskFactory
     {
-        private class SingleThreadedScheduler : TaskScheduler
+        private class WaitForExecuteScheduler : TaskScheduler
         {
-            private readonly Channel<Task> _pending = Channel.CreateUnbounded<Task>();
-            private Task _runner;
-
-            public SingleThreadedScheduler()
-            {
-                _runner = Task.Run(ProcessingThread);
-            }
-
-            private async Task ProcessingThread()
-            {
-                await foreach (var item in _pending.Reader.ReadAllAsync())
-                {
-                    TryExecuteTask(item);
-                }
-            }
+            private readonly Stack<Task> _pending = new();
 
             protected override IEnumerable<Task> GetScheduledTasks()
             {
@@ -60,7 +51,7 @@ public class TaskBasedMemoSolver<TState, TSolution> where TState : ITaskMemoStat
 
             protected override void QueueTask(Task task)
             {
-                _pending.Writer.TryWrite(task);
+                _pending.Push(task);
             }
 
             protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
@@ -73,10 +64,23 @@ public class TaskBasedMemoSolver<TState, TSolution> where TState : ITaskMemoStat
                 bool tryDequeue = base.TryDequeue(task);
                 return tryDequeue;
             }
+
+            public void WaitForAllTasks()
+            {
+                while (_pending.TryPop(out var task))
+                {
+                    TryExecuteTask(task);
+                }
+            }
         }
 
-        public CustomTaskFactory() : base(new SingleThreadedScheduler())
+        public CustomTaskFactory() : base(new WaitForExecuteScheduler())
         {
+        }
+
+        public void WaitForAllTasks()
+        {
+            ((WaitForExecuteScheduler)Scheduler).WaitForAllTasks();
         }
     }
 }

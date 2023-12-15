@@ -106,7 +106,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     case '.':
                     {
                         var right = new TaskSolveState(Pattern[1..], Counts);
-                        return await solver.Solve(right);
+                        return await solver.GetSolutionAsync(right);
                     }
 
                     case '#':
@@ -130,7 +130,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                             }
 
                             var right = new TaskSolveState(Pattern[2..], Counts.RemoveAt(0));
-                            return await solver.Solve(right);
+                            return await solver.GetSolutionAsync(right);
                         }
                         else
                         {
@@ -140,7 +140,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                             }
 
                             var right = new TaskSolveState('#' + Pattern[2..], Counts.SetItem(0, Counts[0]-1));
-                            return await solver.Solve(right);
+                            return await solver.GetSolutionAsync(right);
                         }
                     }
 
@@ -149,7 +149,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                         var left = new TaskSolveState('.' + Pattern[1..], Counts);
                         var right = new TaskSolveState('#' + Pattern[1..], Counts);
 
-                        return await solver.Solve(left) + await solver.Solve(right);
+                        return await solver.GetSolutionAsync(left) + await solver.GetSolutionAsync(right);
                     }
                     
                     default:
@@ -180,7 +180,7 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         
         public static long SolveTaskBasked(string pattern, ImmutableList<int> num)
         {
-            var result = _taskSolver.Solve(new TaskSolveState(pattern, num)).GetAwaiter().GetResult();
+            var result = _taskSolver.Solve(new TaskSolveState(pattern, num));
             
             Helpers.VerboseLine($"Found {result} matches in {pattern}");
 
