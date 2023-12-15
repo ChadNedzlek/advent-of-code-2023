@@ -136,8 +136,6 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     var cycle = i - old.when;
                     var remCycles = (moves - i - 1) % cycle;
                     var endRep = cachedLoads.Values.First(v => v.when == old.when + remCycles);
-                    var after = cachedLoads.Values.First(v => v.when == old.when + remCycles + 1);
-                    var before = cachedLoads.Values.First(v => v.when == old.when + remCycles - 1);
                     Helpers.VerboseLine($"During the {i} cycle == {old.when} with {old.load}, meaning the final is {remCycles} into the cycle at {endRep.when} with a load of {endRep.load}");
                     Console.WriteLine($"Final values is {endRep.load}");
                     return;
