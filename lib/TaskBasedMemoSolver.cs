@@ -12,8 +12,16 @@ public interface IAsyncSolver<TState, TSolution>
 
 public class TaskBasedMemoSolver<TState, TSolution> : IAsyncSolver<TState, TSolution> where TState : ITaskMemoState<TState, TSolution>, IEquatable<TState>
 {
-    private static readonly Dictionary<TState, TSolution> _solveCache = new();
-    private static readonly CustomTaskFactory _custom = new();
+    private readonly Dictionary<TState, TSolution> _solveCache = new();
+    private readonly HashSet<TState> _started = new();
+    private readonly CustomTaskFactory _custom = new();
+
+    public TaskBasedMemoSolver(bool preCheckCycles = false)
+    {
+        PreCheckCycles = preCheckCycles;
+    }
+
+    public bool PreCheckCycles { get; }
 
     Task<TSolution> IAsyncSolver<TState, TSolution>.GetSolutionAsync(TState state) => GetSolutionAsync(state);
 
@@ -24,10 +32,14 @@ public class TaskBasedMemoSolver<TState, TSolution> : IAsyncSolver<TState, TSolu
             return Task.FromResult(sol);
         }
 
+        if (!_started.Add(state))
+        {
+            return Task.FromResult(default(TSolution));
+        }
+
         return _custom.StartNew(() => SolveAsync(state)).Unwrap();
         
         async Task<TSolution> SolveAsync(TState s)
-        
         {
             await Task.Yield();
             var result = await s.Solve(this);

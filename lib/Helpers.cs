@@ -231,6 +231,24 @@ public static class Helpers
         return true;
     }
         
+    public static bool TryGet<T>(this T[,] input, int i1, int i2, out T value)
+    {
+        if (i1 < 0 || i1 >= input.GetLength(0))
+        {
+            value = default;
+            return false;
+        }
+
+        if (i2 < 0 || i2 >= input.GetLength(1))
+        {
+            value = default;
+            return false;
+        }
+
+        value = input[i1, i2];
+        return true;
+    }
+        
     public static bool TrySet<T>(this T[,] input, int i1, int i2, T value)
     {
         if (i1 < 0 || i1 >= input.GetLength(0))
@@ -317,5 +335,20 @@ public static class Helpers
         if (s.Length <= len)
             return "";
         return s[..^len];
+    }
+
+    public static char[,] ToCharArray(this string[] input)
+    {
+        char[,] arr = new char[input.Length, input[0].Length];
+        for (var r = 0; r < input.Length; r++)
+        {
+            string s = input[r];
+            for (int c = 0; c < s.Length; c++)
+            {
+                arr[r, c] = s[c];
+            }
+        }
+
+        return arr;
     }
 }
