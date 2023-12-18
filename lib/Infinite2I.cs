@@ -62,6 +62,22 @@ public class Infinite2I<T> : IEnumerable<T>
         _sparse[(i0, i1)] = value;
         return true;
     }
+    
+    public bool TryGet(int i0, int i1, out T value)
+    {
+        if (i0 < _min0 || i0 > _max0 || i1 < _min1 || i1 > _max1)
+        {
+            value = default;
+            return false;
+        }
+
+        if (!_sparse.TryGetValue((i0, i1), out value))
+        {
+            value = _populate(i0, i1);
+        }
+
+        return true;
+    }
 
     public int GetLowerBound(int i) => i switch
     {
@@ -92,8 +108,10 @@ public class Infinite2I<T> : IEnumerable<T>
                 {
                     yield return value;
                 }
-
-                yield return _populate(i0, i1);
+                else
+                {
+                    yield return _populate(i0, i1);
+                }
             }
         }
     }

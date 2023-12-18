@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChadNedzlek.AdventOfCode.Library;
 
-public abstract class Algorithms
+public static class Algorithms
 {
     public class QueueReadySignal
     {
@@ -25,7 +25,31 @@ public abstract class Algorithms
             old.TrySetResult(result);
         }
     }
-    
+
+    public abstract class PriorityState<TState, TPriority, TIdentity, TScore>
+        where TState : PriorityState<TState, TPriority, TIdentity, TScore>
+    {
+        public abstract IEnumerable<TState> GetNextState();
+        public abstract bool IsEndState();
+        public abstract long GetPriority();
+        public abstract TIdentity GetIdentity();
+        public abstract TScore GetScore();
+        public abstract bool IsBetterScore(TScore a, TScore b);
+
+        public TState Search() => PrioritySearch<TState, TPriority, TIdentity, TScore>((TState)this);
+    }
+
+    public static TState PrioritySearch<TState, TPriority, TIdentity, TScore>(TState start)
+    where TState : PriorityState<TState, TPriority, TIdentity, TScore>
+        => PrioritySearch(
+            start,
+            s => s.GetNextState(),
+            s => s.IsEndState(),
+            s => s.GetPriority(),
+            s => s.GetIdentity(),
+            s => s.GetScore(),
+            start.IsBetterScore);
+
     public static TState PrioritySearch<TState, TPriority, TIdentity, TScore>(TState initial,
         Func<TState, IEnumerable<TState>> nextStates,
         Func<TState, bool> isEndState,

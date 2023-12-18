@@ -74,8 +74,8 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                     .Solve(new AsyncProblem(
                         map,
                         new bool[data.Length, data[0].Length],
-                        new GPoint2I(-1, c),
-                        new GPoint2I(1, 0)))
+                        (-1, c),
+                        (1, 0)))
                     .Cast<bool>()
                     .Count(i => i);
                 if (down > best)

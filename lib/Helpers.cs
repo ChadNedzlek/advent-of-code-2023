@@ -230,6 +230,8 @@ public static class Helpers
         value = l[i2];
         return true;
     }
+
+    public static bool TryGet<T>(this T[,] input, GPoint2I p, out T value) => TryGet(input, p.Row, p.Col, out value);
         
     public static bool TryGet<T>(this T[,] input, int i1, int i2, out T value)
     {
@@ -263,6 +265,8 @@ public static class Helpers
         input[i1, i2] = value;
         return true;
     }
+
+    public static bool IsInRange<T>(this T[,] input, GPoint2I p) => IsInRange<T>(input, p.Row, p.Col);
         
     public static bool IsInRange<T>(this T[,] input, int i1, int i2)
     {
