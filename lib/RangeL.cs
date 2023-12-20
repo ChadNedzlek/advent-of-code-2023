@@ -30,7 +30,7 @@ public readonly record struct RangeL(long Start, long Length)
         if (cur.End > spliceRange.End)
         {
             after = new RangeL(spliceRange.End, cur.End - spliceRange.End);
-            mid = cur with { Length = spliceRange.End - cur.Start };
+            cur = cur with { Length = spliceRange.End - cur.Start };
         }
 
         mid = cur;

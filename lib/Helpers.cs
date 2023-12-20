@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Numerics;
 
 namespace ChadNedzlek.AdventOfCode.Library;
 
@@ -65,7 +66,8 @@ public static class Helpers
 
     public static int PosMod(this int x, int q) => (x % q + q) % q;
         
-    public static long Gcd(long num1, long num2)
+    public static T Gcd<T>(T num1, T num2)
+    where T: IEqualityOperators<T, T, bool>, IComparisonOperators<T,T,bool>, ISubtractionOperators<T,T,T>
     {
         while (num1 != num2)
         {
@@ -78,7 +80,7 @@ public static class Helpers
         return num1;
     }
   
-    public static long Lcm(long num1, long num2)
+    public static T Lcm<T>(T num1, T num2) where T : IMultiplyOperators<T,T,T>, IDivisionOperators<T,T,T>, IComparisonOperators<T, T, bool>, ISubtractionOperators<T, T, T>
     {
         return (num1 * num2) / Gcd(num1, num2);
     }
@@ -159,6 +161,16 @@ public static class Helpers
             yield return Inner();
         }
     }
+
+    public static T Product<T>(this IEnumerable<T> source)
+        where T : IMultiplicativeIdentity<T, T>, IMultiplyOperators<T, T, T>
+        => source.Aggregate(T.MultiplicativeIdentity, (a, b) => a * b);
+
+    public static T Lcm<T>(this IEnumerable<T> source)
+        where T : IMultiplicativeIdentity<T, T>, IMultiplyOperators<T, T, T>, IDivisionOperators<T, T, T>,
+        IComparisonOperators<T, T, bool>, ISubtractionOperators<T, T, T> =>
+        source.Aggregate(T.MultiplicativeIdentity, Lcm);
+
 
     public static bool IncludeVerboseOutput { get; set; }
 

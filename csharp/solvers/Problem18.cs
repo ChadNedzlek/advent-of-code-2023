@@ -107,7 +107,6 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             // And, then imagine the "zero length" square. It's still area "1".  The four corners of that 1
             // expand outward when the size isn't zero anymore... so plus one
             long rCur = 0;
-            long cCur = 0;
             long distSum = 0;
             long lineWeights = 0;
             foreach (var line in data)
@@ -125,20 +124,15 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
                         rCur += length;
                         break;
                     case "0": // right
-                    {
                         distSum -= rCur * length;
-                        cCur += length;
-                    }
                         break;
                     case "2": // left
-                    {
                         distSum += rCur * length;
-                        cCur -= length;
                         break;
-                    }
                 }
             }
 
+            // Math.Abs because it's possible the instructions go counterclockwise, which will invert the answer
             Console.WriteLine($"A value? {Math.Abs(distSum)} + {lineWeights} / 2 + 1 = {Math.Abs(distSum) + lineWeights/2 + 1}");
         }
     }
