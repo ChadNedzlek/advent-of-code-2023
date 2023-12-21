@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using ChadNedzlek.AdventOfCode.Library;
@@ -44,40 +45,57 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
             Dictionary<string, ElfModule> modules = BuildModules(data, out ElfModule broadcaster);
             Dictionary<string, long> highFlips = new ();
 
-            SignalManager signals = new SignalManager(true);
-            for (int i = 0; i < 50_000; i++)
+            var binaryCounters = modules["rx"].Inputs.SelectMany(i => i.Inputs).SelectMany(i => i.Inputs).ToList();
+            long lcm = 1;
+            foreach (var counter in binaryCounters)
             {
-                signals.Send(broadcaster, null, PulseType.Low);
-                signals.ProcessAll();
-                foreach (var m in modules)
+                var bits = SubNodes(counter);
+                List<ElfModule> ordered = GetOrderedBitNodes(bits, broadcaster);
+                
+                int max = 1 << ordered.Count;
+                int start = 0;
+                for (int i = 0; i < ordered.Count; i++)
                 {
-                    if (m.Value.State == PulseType.High)
+                    if (counter.Outputs.Contains(ordered[i]))
                     {
-                        if (!highFlips.ContainsKey(m.Key))
-                        {
-                            highFlips.Add(m.Key, i + 1);
-                        }
+                        start |= 1 << i;
                     }
+                }
+
+                int cycleLength = max - start;
+                lcm = Helpers.Lcm(lcm, cycleLength);
+            }
+            
+            Console.WriteLine($"Result = {lcm}");
+        }
+
+        private static List<ElfModule> GetOrderedBitNodes(HashSet<ElfModule> bits, ElfModule broadcaster)
+        {
+            ElfModule head = bits.First(n => n.Inputs.Contains(broadcaster));
+            List<ElfModule> ordered = new() { head };
+            bits.Remove(head);
+            while (bits.Count != 0)
+            {
+                var next = bits.First(n => n.Inputs.Contains(ordered[^1]));
+                bits.Remove(next);
+                ordered.Add(next);
+            }
+
+            return ordered;
+        }
+
+        private HashSet<ElfModule> SubNodes(ElfModule counter, HashSet<ElfModule> nodes = null)
+        {
+            nodes ??= new HashSet<ElfModule>();
+            foreach (var input in counter.Inputs.OfType<FlipFlopElfModule>())
+            {
+                if (nodes.Add(input))
+                {
+                    nodes = SubNodes(input, nodes);
                 }
             }
 
-            long GetFlippies(ElfModule m)
-            {
-                var ret = m switch
-                {
-                    ConjunctionModule c => c.Inputs.Select(GetFlippies).Aggregate(1L, (a,b) => a | b),
-                    FlipFlopElfModule f => highFlips[f.Name],
-                    BroadcastModule => 1,
-                    NoopModule => m.Inputs.Select(GetFlippies).Product(),
-                };
-                Helpers.Verbose($"Decided {m.GetType().Name} {m.Name} has flippy with (inputs={string.Join(", ", m.Inputs.Select(x => x.Name))}) has ");
-                Helpers.VerboseLine($"{ret}");
-                return ret;
-            }
-
-            var thing = modules["rx"].Inputs.SelectMany(i => i.Inputs).Select(GetFlippies).Lcm();
-            // This is stupid and makes no sense, but it's the answer for some god forsaken reason
-            Console.WriteLine($"High flips of {thing}");
+            return nodes;
         }
 
         private static Dictionary<string, ElfModule> BuildModules(string[] data, out ElfModule broadcaster)

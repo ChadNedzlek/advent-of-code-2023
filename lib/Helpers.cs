@@ -367,4 +367,21 @@ public static class Helpers
 
         return arr;
     }
+
+    public static void PartialOrder<T>(List<T> bits, Func<T, T, bool> swap)
+    {
+        var loop = true;
+        while (loop)
+        {
+            loop = false;
+            for (int i = 0; i < bits.Count - 1; i++)
+            {
+                if (swap(bits[i], bits[i + 1]))
+                {
+                    (bits[i], bits[i + 1]) = (bits[i + 1], bits[i]);
+                    loop = true;
+                }
+            }
+        }   
+    }
 }
