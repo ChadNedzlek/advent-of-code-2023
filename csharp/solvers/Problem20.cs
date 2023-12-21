@@ -43,8 +43,16 @@ namespace ChadNedzlek.AdventOfCode.Y2023.CSharp.solvers
         protected override async Task ExecutePart2Async(string[] data)
         {
             Dictionary<string, ElfModule> modules = BuildModules(data, out ElfModule broadcaster);
-            Dictionary<string, long> highFlips = new ();
-
+            
+            // Why ANY of this? For no reason other than all the solutions HAPPEN
+            // to be exactly FOUR binary counters hooked up to a NAND gate
+            // that resets some number of bits in the input on rollover
+            // and that rollover HAPPENS to be joined to 4 NOT gates
+            // which HAPPEN to be joined to a NAND gate that HAPPENS
+            // to be directly connected to the output.
+            // A single stray connection and this problem is unsolvable
+            // But none of this has anything to do with the problem, and everything
+            // to do with the data set.
             var binaryCounters = modules["rx"].Inputs.SelectMany(i => i.Inputs).SelectMany(i => i.Inputs).ToList();
             long lcm = 1;
             foreach (var counter in binaryCounters)
